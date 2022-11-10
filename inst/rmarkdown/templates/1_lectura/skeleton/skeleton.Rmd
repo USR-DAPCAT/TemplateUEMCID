@@ -1,0 +1,274 @@
+---
+title: 'Analisis transversal descriptivo . Fecha de corte:  `r params$bd.dindex1`'
+author: "Jordi Real & Rai Puig"
+website: "https://github.com/USR-DAPCAT/"
+
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+
+
+output:
+  html_document:
+    df_print: paged
+    toc: true
+    toc_float: true
+    fig_caption: true
+    css: logos_css/usr_styles.css
+  pdf_document: default
+  word_document: default
+
+params:
+  dir_dades_origen: "dades" 
+  dir_dades_desti: "dades" 
+  bd.dindex1: '20221111'
+  bd.dindex2: '20221111'
+---
+
+
+&nbsp;
+<script>
+   $(document).ready(function() {
+     $head = $('#header');
+     $head.prepend('<img src=\"https://www.idiapjgol.org/images/logo.png\" style=\"float: right ;width: 130px;\"/>')
+     $head.prepend('<img src=\"https://avatars2.githubusercontent.com/u/57066591?s=200&v=4\" style=\"margin-left:25% ;width: 80px;\"/>')
+     $head.prepend('<img src=\"logoDAP_Cat.png\" style=\"float: left:1;width: 185px;\"/>')
+   });
+</script>
+
+
+
+<div class="watermark">DRAFT</div>
+
+
+
+
+# FASE LECTURA
+
+>> Generacion de tabla plana y aplicacion de los primeros criterios inclusion 
+
+```{r setup, include = FALSE}
+#rm(list=ls())
+#library(dplyr)
+
+# Funcions (provisional, quan tinguem la llibreria , ja no caldra!!!) 
+#link_source<-paste0("https://github.com/jrealgatius/Stat_codis/blob/master/funcions_propies.R","?raw=T")
+#devtools::source_url(link_source)
+
+#conductor_codis<-here::here("CATALEG.xlsx")
+
+#directori_dades_origen<-params$dir_dades_origen
+
+#dt_cataleg<-readxl::read_excel(conductor_codis,col_types = "text")%>% select(cod,domini,agr,agr_Farmac,DM2)
+#
+#
+#[S'ha d'instal.lar les llibreries:
+#i)       Platan(aplanar les bases de dades.DapCat)
+#ii)      Formatge(formatejar dades.DapCat)
+#iii)     Macedonia(altres funcions.DapCat )
+#
+library("devtools")
+library("dplyr")
+#devtools::install_github("USR-DAPCAT/Platan")
+#devtools::install_github("USR-DAPCAT/FormatGe")
+#devtools::install_github("USR-DAPCAT/Macedonia")
+#devtools::install_github("USR-DAPCAT/ggflowchart2")
+#
+library("Platan")
+#library("FormatGe")
+#library("Macedonia")
+#library("ggflowchart2")
+```
+
+```{r estructura_carpetes, eval=FALSE}
+
+# estructura de carpetes: /dades /codi /outputs /docs
+
+# Genero el directori si no existeic
+directori<-paste0("dades")
+if (!file.exists(directori)) {dir.create(file.path(directori), showWarnings = FALSE)}
+  
+directori<-paste0("codi")
+if (!file.exists(directori)) {dir.create(file.path(directori), showWarnings = FALSE)}
+
+directori<-paste0("outputs")
+if (!file.exists(directori)) {dir.create(file.path(directori), showWarnings = FALSE)}
+
+directori<-paste0("docs")
+if (!file.exists(directori)) {dir.create(file.path(directori), showWarnings = FALSE)}
+
+
+```
+## 1. Lectura previa DataIndex 
+```{r lectura1, include=T}
+
+# 1 Lectura -----------
+#i)
+dt_diagnostics<-dt_diagnostics %>% as_tibble()
+#ii)
+dt_poblacio<-dt_poblacio %>% as_tibble()
+
+#dt_poblacio<-dt_poblacio%>%mutate(sortida=20221231)
+
+```
+##2. Generar DataIndex
+```{r generem la data_Index, include=F}
+
+#data_index TRANSVERSAL!
+
+
+
+#dt_index<-dt_poblacio  %>%mutate(dtindex=20220101)%>%select(idp,dtindex)
+
+
+#bd data Index.
+
+idp=c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30)
+
+dtindex=c(20220101,20220101,20220101,20220101,20220101,20220101,20220101,20220101,20220101,20220101,
+20220101,20220101,20220101,20220101,20220101,20220101,20220101,20220101,20220101,20220101,
+20220101,20220101,20220101,20220101,20220101,20220101,20220101,20220101,20220101,20220101)
+
+dt_index<-data.frame(idp=idp,dtindex=dtindex)
+dt_index<-tibble::as_tibble(dt_index)
+dt_index$dtindex<-as.character(dt_index$dtindex)
+
+
+
+#dt_index<-
+#  dt_poblacio %>% select(idp,entrada,sortida) %>% mutate(kk=1) %>%
+#  left_join(tibble(dtindex=seq(params$bd.dindex1,params$bd.dindex2,by=10000),kk=1),by="kk") %>%
+#  filter(entrada<=dtindex & dtindex<=sortida)  %>%  # Filtro per usuari actiu en data index
+#  select(-c(kk,entrada,sortida))
+
+#gc()
+
+#dt_index
+
+```
+
+## 3. Lectura posterior a DataIndex 
+
+```{r lectura2, include=T}
+# 1 Lectura -----------
+
+
+dt_poblacio<-dt_poblacio
+
+
+dtagr_diagnostics<-agregar_problemes(dplyr::select(dt_diagnostics,idp,cod,dat),
+bd.dindex = 20220101,
+dt.agregadors=cataleg,
+finestra.dies=c(-Inf,0),prefix = "DG.",
+cataleg_mana=TRUE)
+
+#tagr_diagnostics
+
+
+
+dtagr_facturacio<-agregar_facturacio(
+dt=dt_facturacio,
+bd.dindex=20220101,
+finestra.dies=c(-Inf,0),
+dt.agregadors=cataleg,
+prefix="FF.",
+camp_agregador="agr",
+agregar_data=TRUE,
+cataleg_mana=TRUE,
+acumular=NULL)
+
+#dtagr_facturacio
+
+
+
+dtagr_prescripcions<-agregar_prescripcions(
+dt=dt_prescripcions,
+bd.dindex=20220101,
+finestra.dies=c(-Inf,0),
+dt.agregadors=cataleg,
+prefix="FP.",
+camp_agregador="agr",
+agregar_data=TRUE,
+cataleg_mana =TRUE,
+acumular=NULL)
+
+#dtagr_prescripcions
+
+
+
+dtagr_variables<-agregar_analitiques(dt=dt_variables,bd.dindex=20220101,finestra.dies = c(-Inf,0))
+#dtagr_variables
+
+
+dtagr_diagnostics<-dtagr_diagnostics%>%select(-dtindex)
+dtagr_prescripcions<-dtagr_prescripcions%>%select(-dtindex)
+dtagr_facturacio<-dtagr_facturacio%>%select(-dtindex)
+dtagr_variables<-dtagr_variables%>%select(-dtindex)
+
+
+
+
+```
+
+
+## 5. Fusio 1
+
+Fusionar part dels arxius agregats 
+ 
+```{r fusio1}
+
+
+dt_plana<-dt_index%>%
+left_join(dt_poblacio,by="idp")%>%
+  left_join(dtagr_diagnostics,by="idp")%>%
+    left_join(dtagr_facturacio,by="idp")%>%
+     left_join(dtagr_prescripcions,by="idp")%>%
+      left_join(dtagr_variables,by="idp")
+       
+  
+
+
+```
+## 6. Generacio GranFuncio+Fusio+Taula Plana
+```{r GranFuncio,include=T}
+
+
+
+
+
+#Parametres:
+fitxer=c("dt_diagnostics",
+         "dt_facturacio",
+         "dt_prescripcions",
+         "dt_variables")
+
+domini=c("diagnostics","farmacs_facturats","farmacs_prescrits","variables")
+
+Finestra1=c(-Inf,-Inf,-Inf,-Inf)
+
+Finestra2=c(0,0,0,0)
+
+camp=c("agr","agr","agr","cod")
+
+funcio=c("first","first","first","last")
+
+prefix =c("DG.","FF.","FP.","Valor.")
+
+dt_parametres<-data.frame(cbind(fitxer,domini,Finestra1,Finestra2,camp,prefix,funcio))
+dt_parametres
+
+
+dt_plana2<-Generar_taula_plana(
+dt=dt_index,
+cataleg=cataleg,
+parametres=dt_parametres)
+
+
+dt_plana2
+
+
+```
+
+## 5. Salvar part1 
+```{r SALVAR}
+#saveRDS(dt_plana, file=here::here(params$dir_dades_desti,"dt_plana1.rds"))
+
+```

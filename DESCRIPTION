@@ -1,0 +1,37 @@
+Package:              TemplateUEMCID
+Type:                 Package
+Title:                Plantilles per poder treballar en projectes de bases de dades cliniques
+Version:              0.1.0
+Date:                 2022-08-25
+Author:               Ray Puig i Jordi Real
+Maintainer:           Ray Puig <raypuig@gmail.com>
+Description:          Plantilles per poder treballar en projectes de bases de dades cliniques.
+License:              GPL(>=3)
+Encoding:             UTF-8
+LazyData:             true
+RoxygenNote:          7.2.1
+Depends:
+                      R (>= 3.5.0)
+Imports:
+                      dplyr,
+                      data.table,
+                      stringr,
+                      purrr,
+                      readxl,
+                      foreign,
+                      tidyr,
+                      rlang,
+                      lubridate,
+                      ggplot2,
+                      here,
+                      knitr,
+                      tibble,
+                      tidyselect,
+                      magrittr,
+                      utils,
+                      devtools,
+                      stats,
+                      Hmisc
+Suggests:
+                      roxygen2
+
