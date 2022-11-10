@@ -60,7 +60,7 @@ library("FormatGe")
 
 
 
-dt_plana<-Taula_plana
+dt_plana2<-Taula_plana
 
 #TIPUS DE RECODIFICACIONS:
 
@@ -232,9 +232,9 @@ dt_plana<-dt_plana %>% mutate(age2.cat=case_when(age<30~ "age<30",
 
 
 #6)Tabac Categoric.
-dt_plana<-dt_plana%>% mutate(tabac2=case_when(tabac.valor==0~"1.   No Fumador",
-                                              tabac.valor==1~"2.   Fumador",
-                                              tabac.valor==2~"3.   Exfumador"))
+#dt_plana<-dt_plana%>% mutate(tabac2=case_when(tabac.valor==0~"1.   No Fumador",
+#                                              tabac.valor==1~"2.   Fumador",
+#                                              tabac.valor==2~"3.   Exfumador"))
 
 
 #7)Situacio Categoric.
@@ -341,7 +341,7 @@ dt_plana<-dt_plana%>% mutate_at(c("dnaix","entrada","sortida" ),ymd)
 
 ```{r salvar}
 
-saveRDS(dt_plana, file=here::here(params$dir_dades_desti,"dt_plana2.rds"))
+#saveRDS(dt_plana, file=here::here(params$dir_dades_desti,"dt_plana2.rds"))
 
 ```
 
