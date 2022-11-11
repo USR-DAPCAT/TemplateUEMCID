@@ -60,7 +60,14 @@ library("FormatGe")
 
 
 
-dt_plana2<-Taula_plana
+dt_plana<-Taula_plana
+
+library("Platan")
+
+
+dt_plana<-dt_plana%>%
+left_join(dt_poblacio,by="idp")
+
 
 #TIPUS DE RECODIFICACIONS:
 
@@ -297,24 +304,42 @@ dt_plana<-dt_plana%>% mutate(situacio2=case_when(situacio=="A"~"1.Activo",
 ```{r recodificacions4}
 ###V.Analitiques+V.Cliniques.##
 
+#CANVIAR-HO i arreglar dt_plana!
+
+
+#variables_cliniques	TT102	Pes [kgs] / Peso / Weight
+#variables_cliniques	EK201	Pressió Arterial Sistòlica [mm de Hg]
+#variables_cliniques	TT103	IMC (Índex de Massa Corporal) [kgs/m2]
+#variables_cliniques	ALRIS	Consum alcohol (grau de risc) {Alcohol}
+#variables_cliniques	TT101	Alçada [cm] / Talla / Height
+#variables_cliniques	EK202	Pressió Arterial Diastòlica [mm de Hg]
+#variables_cliniques	VK2020	Polsos - Pedi/tibial post. dret
+#variables_cliniques	VK2021	Polsos - Pedi/tibial - post. esquerre
+#variables_cliniques	TK2011	Pedi Dret {ITB}
+#variables_cliniques	TK201E	ITB Esqerre {ITB}
+#variables_cliniques	TK2013	Tibial Post Dret {ITB}
+#variables_cliniques	TK2012	Pedi Esquerre {ITB}
+#variables_cliniques	TK2014	Tibial Post Esquerre {ITB}
+#variables_cliniques	TK201D	ITB Dret {ITB}
+
 
 #1)Index de Massa Corporal->IMC.valor_cat: <15,[15-25),[25-30),>=30
-dt_plana<-dt_plana%>%mutate(IMC.valor_cat=case_when(IMC.valor   <15~ "IMC.valor   <15",
-                                                    IMC.valor   >=15 & IMC.valor   <25 ~ "IMC.valor   >=15 & IMC.valor",  
-                                                    IMC.valor   >=25 & IMC.valor   <30 ~ "IMC.valor   >=25 & IMC.valor   <30",
-                                                    IMC.valor   >=30  ~ "IMC.valor   >=30"))
+#dt_plana<-dt_plana%>%mutate(IMC.valor_cat=case_when(TT103valor   <15~ "IMC.valor   <15",
+#                                                    TT103valor   >=15 & TT103valor   <25 ~ "IMC.valor   >=15 & IMC.valor",  
+#                                                    TT103valor   >=25 & TT103valor   <30 ~ "IMC.valor   >=25 & IMC.valor   <30",
+#                                                    TT103valor   >=30  ~ "IMC.valor   >=30"))
 #2)COLESTEROL TOTAL: cT.valor               
-dt_plana<-dt_plana%>%mutate(cT.valor_CAT=case_when(  COLTOT.valor     <200~ "COLTOT.valor     <200",
-                                                     COLTOT.valor     >=200 & COLTOT.valor     <=240 ~ "COLTOT.valor     >=200 & COLTOT.valor     <=240 ",  
-                                                     COLTOT.valor     >240  ~ " COLTOT.valor     >240"))
+#dt_plana<-dt_plana%>%mutate(cT.valor_CAT=case_when(  COLTOT.valor     <200~ "COLTOT.valor     <200",
+#                                                     COLTOT.valor     >=200 & COLTOT.valor     <=240 ~ "COLTOT.valor     >=200 & #COLTOT.valor     <=240 ",  
+#                                                     COLTOT.valor     >240  ~ " COLTOT.valor     >240"))
 #3)COLESTEROL HDL
-dt_plana<-dt_plana%>%mutate(cHDL.valor_CAT=case_when(COLHDL.valor        <45~ "COLHDL.valor        <45",
-                                                     COLHDL.valor        >=45 & COLHDL.valor        <=90 ~ "COLHDL.valor        >=45 & COLHDL.valor        <=90",  
-                                                     COLHDL.valor        >90  ~ "COLHDL.valor        >90"))
+#dt_plana<-dt_plana%>%mutate(cHDL.valor_CAT=case_when(COLHDL.valor        <45~ "COLHDL.valor        <45",
+#                                                     COLHDL.valor        >=45 & COLHDL.valor        <=90 ~ "COLHDL.valor        >=45 & #COLHDL.valor        <=90",  
+#                                                     COLHDL.valor        >90  ~ "COLHDL.valor        >90"))
 #4)COLESTEROL LDL LDL.COLESTEROL.LDL, (<70, <100, >100, >130) 
-dt_plana<-dt_plana%>%mutate(cLDL.valor_CAT=case_when(COLLDL.valor        <70~ "COLLDL.valor        <70",
-                                                     COLLDL.valor        >=70 & COLLDL.valor        <130 ~ "COLLDL.valor        >=70 & COLLDL.valor        <130",  
-                                                     COLLDL.valor        >=130  ~ "COLLDL.valor        >=130"))
+#dt_plana<-dt_plana%>%mutate(cLDL.valor_CAT=case_when(COLLDL.valor        <70~ "COLLDL.valor        <70",
+#                                                     COLLDL.valor        >=70 & COLLDL.valor        <130 ~ "COLLDL.valor        >=70 & #COLLDL.valor        <130",  
+#                                                     COLLDL.valor        >=130  ~ "COLLDL.valor        >=130"))
 
 ```
 
@@ -334,6 +359,14 @@ dt_plana<-dt_plana%>%mutate(cLDL.valor_CAT=case_when(COLLDL.valor        <70~ "C
 ```{r recodificacions6}
 
 dt_plana<-dt_plana%>% mutate_at(c("dnaix","entrada","sortida" ),ymd)
+
+```
+## Flow-chart i Analisi
+
+
+```{r analisis1}
+
+#fer-ho
 
 ```
 
