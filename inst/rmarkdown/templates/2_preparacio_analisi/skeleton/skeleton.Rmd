@@ -395,7 +395,7 @@ conductor2<-rbind(conductor2,exclusio1)
 
 
 k2<-criteris_exclusio_diagrama(
-dt=dt_plana,
+dt=dt_plana2,
 taulavariables=conductor2,
 criteris="exclusio",
 ordre="exc_ordre",
