@@ -319,22 +319,27 @@ dt_plana<-dt_plana%>% mutate(situacio2=case_when(situacio=="A"~"1.Activo",
 
 
 #1)Index de Massa Corporal->IMC.valor_cat: <15,[15-25),[25-30),>=30
-#dt_plana<-dt_plana%>%mutate(IMC.valor_cat=case_when(TT103valor   <15~ "IMC.valor   <15",
-#                                                    TT103valor   >=15 & TT103valor   <25 ~ "IMC.valor   >=15 & IMC.valor",  
-#                                                    TT103valor   >=25 & TT103valor   <30 ~ "IMC.valor   >=25 & IMC.valor   <30",
-#                                                    TT103valor   >=30  ~ "IMC.valor   >=30"))
+
+dt_plana<-dt_plana%>%mutate(IMC.valor_cat=case_when(TT103.valor   <15~ "IMC.valor   <15",
+                                                    TT103.valor   >=15 & TT103.valor   <25 ~ "IMC.valor   >=15 & IMC.valor",  
+                                                    TT103.valor   >=25 & TT103.valor   <30 ~ "IMC.valor   >=25 & IMC.valor   <30",
+                                                    TT103.valor   >=30  ~ "IMC.valor   >=30"))
+
 #2)COLESTEROL TOTAL: cT.valor               
-#dt_plana<-dt_plana%>%mutate(cT.valor_CAT=case_when(  COLTOT.valor     <200~ "COLTOT.valor     <200",
-#                                                     COLTOT.valor     >=200 & COLTOT.valor     <=240 ~ "COLTOT.valor     >=200 & #COLTOT.valor     <=240 ",  
-#                                                     COLTOT.valor     >240  ~ " COLTOT.valor     >240"))
+dt_plana<-dt_plana%>%mutate(cT.valor_CAT=case_when(  COLTOT.valor     <200~ "COLTOT.valor     <200",
+                                                     COLTOT.valor     >=200 & COLTOT.valor     <=240 ~ "COLTOT.valor     >=200 & 
+                                                     COLTOT.valor     <=240 ",  
+                                                     COLTOT.valor     >240  ~ " COLTOT.valor     >240"))
 #3)COLESTEROL HDL
-#dt_plana<-dt_plana%>%mutate(cHDL.valor_CAT=case_when(COLHDL.valor        <45~ "COLHDL.valor        <45",
-#                                                     COLHDL.valor        >=45 & COLHDL.valor        <=90 ~ "COLHDL.valor        >=45 & #COLHDL.valor        <=90",  
-#                                                     COLHDL.valor        >90  ~ "COLHDL.valor        >90"))
+dt_plana<-dt_plana%>%mutate(cHDL.valor_CAT=case_when(COLHDL.valor        <45~ "COLHDL.valor        <45",
+                                                     COLHDL.valor        >=45 & COLHDL.valor        <=90 ~ "COLHDL.valor        >=45 & 
+                                                     COLHDL.valor        <=90",  
+                                                     COLHDL.valor        >90  ~ "COLHDL.valor        >90"))
 #4)COLESTEROL LDL LDL.COLESTEROL.LDL, (<70, <100, >100, >130) 
-#dt_plana<-dt_plana%>%mutate(cLDL.valor_CAT=case_when(COLLDL.valor        <70~ "COLLDL.valor        <70",
-#                                                     COLLDL.valor        >=70 & COLLDL.valor        <130 ~ "COLLDL.valor        >=70 & #COLLDL.valor        <130",  
-#                                                     COLLDL.valor        >=130  ~ "COLLDL.valor        >=130"))
+dt_plana<-dt_plana%>%mutate(cLDL.valor_CAT=case_when(COLLDL.valor        <70~ "COLLDL.valor        <70",
+                                                     COLLDL.valor        >=70 & COLLDL.valor        <130 ~ "COLLDL.valor        >=70 & 
+                                                     COLLDL.valor      <130",  
+                                                     COLLDL.valor        >=130  ~ "COLLDL.valor        >=130"))
 
 ```
 
@@ -363,7 +368,73 @@ dt_plana<-dt_plana%>% mutate_at(c("dnaix","entrada","sortida" ),ymd)
 
 ```{r analisis1}
 
-#fer-ho
+IMC.valor <-dt_plana$TT103.valor
+DG.HTA <-0
+cHDL.valor <-dt_plana$COLHDL.valor
+cLDL.valor <-dt_plana$COLLDL.valor
+cT.valor <-dt_plana$COLTOT.valor
+GLICADA.valor<-dt_plana$ HBA1C.valor
+INCLUSIO.DM2<-0
+
+dt_plana2<-data.frame(dt_plana,IMC.valor,DG.HTA,cHDL.valor,cLDL.valor,cT.valor,GLICADA.valor,INCLUSIO.DM2)
+
+
+dt_plana2<-dt_plana2%>%mutate(exclusio1=ifelse(IMC.valor>30,1,0)) 
+dt_plana2<-mutate_at(dt_plana2, vars( starts_with("exclusio1") ), funs( if_else(.==0  |  is.na(.)  ,0,1)))
+
+
+
+
+exclusio=c("","","","","","","","","","","","","","",">30")
+exc_ordre=c("","","","","","","","","","","","","","","1")
+exc_pre=c("","","","","","","","","","","","","","","")
+conductor2<-data.frame(conductor1,exclusio,exc_ordre,exc_pre)
+
+exclusio1<-c("exclusio1","exclusio1","exclusio1","","","","","","","","","","","1")
+conductor2<-rbind(conductor2,exclusio1)
+
+
+k2<-criteris_exclusio_diagrama(
+dt=dt_plana,
+taulavariables=conductor2,
+criteris="exclusio",
+ordre="exc_ordre",
+grups=NA,
+etiquetes="descripcio",
+sequencial = TRUE,
+pob_lab=c("Pob inicial","Pob final"),
+colors=c("white","grey"),
+forma=c("ellipse","box"))
+
+k2
+
+#Apliquem les EXCLUSIONS! NO FUNCIONA!!
+
+descrTable(dt_plana)
+
+
+#mirar-ho!!
+#flow_chart1<-criteris_exclusio_diagrama(dt=dades,
+#                                        taulavariables=conductor,
+#                                        criteris = "exc_pre",
+#                                        ordre="exc_ordre",
+#                                        grups=NA,
+#                                        etiquetes="descripcio2",
+#                                        sequencial = T,
+#                                        pob_lab=c("epiTempus DM2  ","epiTempus DM2 without exclusions"),
+#                                        colors=c("white","grey"),
+#                                        forma=c("ellipse","box"))
+#flow_chart1
+
+
+#Apliquem les EXCLUSIONS!
+#dades<-criteris_exclusio(dades,taulavariables=conductor,criteris="exc_pre")
+
+
+#dt_plana_exc2<-criteris_exclusio(dt_plana2,taulavariables=conductor2, criteris="exc_pre" )
+
+
+
 
 ```
 
