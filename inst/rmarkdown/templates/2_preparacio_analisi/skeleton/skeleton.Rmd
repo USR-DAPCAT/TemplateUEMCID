@@ -43,12 +43,20 @@ knitr::opts_chunk$set(echo = FALSE, message=FALSE, warning=FALSE, include=F,size
 
 gc()
 # libreries i funcions
+#rm(list=ls())
+
+#devtools::install_github("USR-DAPCAT/Platan")
+#devtools::install_github("USR-DAPCAT/FormatGe")
+#devtools::install_github("USR-DAPCAT/Macedonia")
+#devtools::install_github("USR-DAPCAT/ggflowchart2")
+
 library("dplyr")
 library("lubridate")
 library("compareGroups")
 
 
 library("FormatGe")
+library("ggflowchart2")
 
 # Descarregar funcions github -
 #link_source<-paste0("https://github.com/jrealgatius/Stat_codis/blob/master/funcions_propies.R","?raw=T")
@@ -62,11 +70,6 @@ library("FormatGe")
 
 dt_plana<-Taula_plana
 
-library("Platan")
-
-
-dt_plana<-dt_plana%>%
-left_join(dt_poblacio,by="idp")
 
 
 #TIPUS DE RECODIFICACIONS:
@@ -252,14 +255,6 @@ dt_plana<-dt_plana%>% mutate(situacio2=case_when(situacio=="A"~"1.Activo",
 ```
 
 
-## Recodificacions i calculs [Part Diagnostics: dt_diagnostics_AP_HOSP]
-
-```{r recodificacions2}
-###Problemes de Salut##
-
-#1)Neuropatia periferica : diagnostico registrado o el valor de monofilamento
-#dt_plana<-dt_plana%>%mutate(DG.NEUROPT2=ifelse(DG.NEUROPT==1,1,0)) 
-```
 ## Recodificacions i calculs [Part FARMACS: dt_facturacio,dt_prescripcio]
 
 ```{r recodificacions3}
@@ -361,6 +356,8 @@ dt_plana<-dt_plana%>% mutate(situacio2=case_when(situacio=="A"~"1.Activo",
 dt_plana<-dt_plana%>% mutate_at(c("dnaix","entrada","sortida" ),ymd)
 
 ```
+## Fase Analsis
+
 ## Flow-chart i Analisi
 
 
