@@ -59,7 +59,7 @@ library("FormatGe")
 library("ggflowchart2")
 
 
-dt_plana<-Taula_plana
+dt_plana<-Taula_plana_test2
 
 #########################################################################################
 #
@@ -372,7 +372,7 @@ dt_plana2<-dt_plana2%>%mutate(IMC.valor=ifelse(is.na(IMC.valor),999,IMC.valor))
 exclusio=c("","","","","","","","","","","","","","",">30")
 exc_ordre=c("","","","","","","","","","","","","","","1")
 exc_pre=c("0","0","0","0","0","0","0","0","0","0","0","0","0","0","0")
-conductor2<-data.frame(conductor1,exclusio,exc_ordre,exc_pre)
+conductor2<-data.frame(conductor1_test,exclusio,exc_ordre,exc_pre)
 
 exclusio1<-c("exclusio1","exclusio1","exclusio1","","","","","","","","","","","1")
 conductor2<-rbind(conductor2,exclusio1)
